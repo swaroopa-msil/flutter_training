@@ -29,35 +29,40 @@ class _GroceryListWidgetState extends ConsumerState<GroceryListWidget> {
 
   void _loadItem() async{
     final url = Uri.https('flutter-training-4d283-default-rtdb.firebaseio.com','shopping-list.json');
-    final resp = await http.get(url);
-    if(resp.body == 'null'){
+    try{
+      final resp = await http.get(url);
+      if(resp.body == 'null'){
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      if(resp.statusCode >= 400){
+        setState(() {
+          _isLoading = false;
+          _error = 'Failed to fetch data please try again later!';
+        });
+        return;
+      }
+
+      final Map<String,dynamic> resultList = json.decode(resp.body);
+      final List<GroceryItem> tempList = [];
+      for (final item in resultList.entries){
+        final cat = categories.entries.firstWhere((c) => c.value.categoryName == item.value['category'] ).value;
+        tempList.add(GroceryItem(name: item.value['name'],
+            id: item.key,
+            category: cat,
+            quantity: item.value['quantity']));
+      }
       setState(() {
+        groceryList = tempList;
         _isLoading = false;
       });
-      return;
+    }catch(error){
+      _error = 'Something went wrong, try again later!';
     }
 
-    if(resp.statusCode >= 400){
-      setState(() {
-        _isLoading = false;
-        _error = 'Failed to fetch data please try again later!';
-      });
-      return;
-    }
-
-    final Map<String,dynamic> resultList = json.decode(resp.body);
-    final List<GroceryItem> tempList = [];
-    for (final item in resultList.entries){
-      final cat = categories.entries.firstWhere((c) => c.value.categoryName == item.value['category'] ).value;
-      tempList.add(GroceryItem(name: item.value['name'],
-          id: item.key,
-          category: cat,
-          quantity: item.value['quantity']));
-    }
-    setState(() {
-      groceryList = tempList;
-      _isLoading = false;
-    });
   }
 
   void _deleteItem(GroceryItem item) async{
