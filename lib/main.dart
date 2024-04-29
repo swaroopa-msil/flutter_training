@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:march09/bloc/CounterBloc.dart';
+import 'package:march09/bloc/movie_bloc.dart';
 import 'package:march09/bloc/bloc_provider.dart';
-import 'package:march09/screens/counter_screen.dart';
+import 'package:march09/screens/movie_home_screen.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0),
+    seedColor: const Color.fromARGB(255, 12, 42, 87),
   ),
   textTheme: GoogleFonts.latoTextTheme(),
 );
@@ -22,9 +21,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return  MaterialApp(
+    return    BlocProvider(widgetObject: MaterialApp(
           theme: theme,
-          home:  BlocProvider(widgetObject: const CounterScreen(),
-              blocObject: CounterBloc()));
+          home:  const MovieHomeScreen() ),
+              blocObject: MovieBloc());
   }
 }
