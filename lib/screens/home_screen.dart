@@ -1,24 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:march09/screens/watchlist_screen.dart';
+import 'package:march09/screens/wishlist_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.navigationShell});
+import '../utils/app_constants.dart';
 
-  final StatefulNavigationShell navigationShell;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  var _selectedIndex = 0;
+
+  final List<Widget> _screenWidget = <Widget>[
+    const Watchlist(),
+    const Wishlist()
+  ];
 
   void _onTapCall(int index){
-    navigationShell.goBranch(index,initialLocation: index == navigationShell.currentIndex);
+     setState(() {
+       _selectedIndex = index;
+     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: navigationShell,
+      body: _screenWidget.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_filled),label: 'Watchlist'),
-          BottomNavigationBarItem(icon: Icon(Icons.cases),label: 'WishList')
+        currentIndex: _selectedIndex,
+        items:  [
+          BottomNavigationBarItem(icon: const Icon(Icons.home_filled),label: AppConstants.watchListLabel),
+          BottomNavigationBarItem(icon: const Icon(Icons.cases),label: AppConstants.wishListLabel)
         ],
         onTap: _onTapCall,
       ),

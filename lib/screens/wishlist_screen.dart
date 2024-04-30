@@ -11,6 +11,25 @@ class Wishlist extends StatefulWidget {
 
 class _WishlistState extends State<Wishlist> {
 
+  Widget _getWishList(DataListChangeProvider value,int index){
+    final dataItem = value.favDataList[index];
+    return Dismissible(
+      key: Key(dataItem),
+      onDismissed: (direction){
+        value.removeFromFav(dataItem);
+      },
+      child: ListTile(
+        title: Text(dataItem),
+        leading: IconButton(
+          onPressed: (){
+            value.removeFromFav(dataItem);
+          },
+          icon: const Icon(Icons.star, color: Colors.green),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content =  Text('Empty Wishlist',style: TextStyle(color: Theme.of(context).colorScheme.onBackground));
@@ -21,21 +40,7 @@ class _WishlistState extends State<Wishlist> {
               child: value.favDataList.isEmpty ? content : ListView.builder(
                 itemCount: value.favDataList.length,
                   itemBuilder: (content,index){
-                   return Dismissible(
-                     key: Key(value.favDataList[index]),
-                     onDismissed: (direction){
-                       value.removeFromFav(value.favDataList[index]);
-                     },
-                     child: ListTile(
-                        title: Text(value.favDataList[index]),
-                       leading: IconButton(
-                         onPressed: (){
-                           value.removeFromFav(value.favDataList[index]);
-                         },
-                         icon: const Icon(Icons.star, color: Colors.green),
-                       ),
-                      ),
-                   );
+                   return  _getWishList(value,index);
                   })
           ),
         );

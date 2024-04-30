@@ -13,7 +13,11 @@ class DataListChangeProvider extends ChangeNotifier{
   }
 
   void addToFav(String item){
-    favDataList.add(item);
+    if(isInFav(item)){
+      removeFromFav(item);
+    }else{
+      favDataList.add(item);
+    }
     notifyListeners();
   }
   void removeFromFav(String item){

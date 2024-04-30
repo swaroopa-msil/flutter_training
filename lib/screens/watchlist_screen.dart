@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:march09/providers/data_List_change_provider.dart';
+import 'package:march09/utils/app_constants.dart';
 import 'package:provider/provider.dart';
 
 class Watchlist extends StatefulWidget {
@@ -21,10 +22,47 @@ class _WatchlistState extends State<Watchlist> {
     super.dispose();
   }
 
+  Widget _getWatchList(DataListChangeProvider provider,int index){
+    final dataItem = provider.dataList[index];
+          return Dismissible(
+            key: Key(dataItem),
+            onDismissed: (direction){
+              provider.removeFromList(dataItem);
+            },
+            child: ListTile(
+              leading: IconButton(
+                onPressed: (){
+                  provider.addToFav(dataItem);
+                },
+                icon: Icon(Icons.star, color: provider.isInFav(dataItem) ? Colors.green : Colors.grey),
+              ),
+              title:Text(dataItem),
+            ),
+          );
+  }
+
+  Widget getInputItem(DataListChangeProvider provider){
+    return  Row(
+      children: [
+        Expanded(
+          child: TextField(
+              controller: _controller,
+              decoration:  InputDecoration(
+                  labelText: AppConstants.enterTextLabel
+              )
+          ),
+        ),
+        IconButton(onPressed: (){
+          provider.addToList( _controller.text);
+          _controller.clear();
+        }, icon: const Icon(Icons.add))
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget  content = Center(child: Text('No data in watchlist',style: TextStyle(color: Theme.of(context).colorScheme.onBackground)));
+    Widget  content = Center(child: Text(AppConstants.noDataLabel,style: TextStyle(color: Theme.of(context).colorScheme.onBackground)));
     return Consumer<DataListChangeProvider>(builder:
         (BuildContext context, DataListChangeProvider value, Widget? child) {
       return
@@ -35,39 +73,10 @@ class _WatchlistState extends State<Watchlist> {
               Expanded( child: value.dataList.isEmpty ? content :
                      ListView.builder( itemCount: value.dataList.length,
                         itemBuilder: (context,index){
-                          return Dismissible(
-                            key: Key(value.dataList[index]),
-                            onDismissed: (direction){
-                              value.removeFromList(value.dataList[index]);
-                            },
-                            child: ListTile(
-                              leading: IconButton(
-                                onPressed: (){
-                                  value.addToFav(value.dataList[index]);
-                                },
-                                icon: Icon(Icons.star, color: value.isInFav(value.dataList[index]) ? Colors.green : Colors.grey),
-                              ),
-                              title:Text(value.dataList[index]),
-                            ),
-                          );
+                          return _getWatchList(value,index);
                         }),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          decoration: const InputDecoration(
-                              labelText: 'Enter the item to watchlist'
-                          )
-                        ),
-                      ),
-                      IconButton(onPressed: (){
-                        value.addToList( _controller.text);
-                        _controller.clear();
-                      }, icon: const Icon(Icons.add))
-                    ],
-                  )
+                  getInputItem(value)
                 ],
               )
           ),
