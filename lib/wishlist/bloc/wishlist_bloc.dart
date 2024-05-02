@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:march09/data/groceries_data_list.dart';
 import 'package:march09/model/grocery_item.dart';
 import 'package:march09/wishlist/bloc/wishlist_event.dart';
-import 'package:meta/meta.dart';
 
 part 'wishlist_state.dart';
 
@@ -11,9 +12,14 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     on<WishListLoadedSuccessEvent>((event, emit) {
        emit(WishlistLoadSuccessState(groceryItemList: GroceryData.groceryWishList));
     });
+    on<WishListNavToHomeSuccessEvent>(wishListNavToHomeSuccessEvent);
     on<RemoveFromWishlistEvent>((event, emit){
       GroceryData.groceryWishList.remove(event.groceryItem);
       emit(WishlistLoadSuccessState(groceryItemList: GroceryData.groceryWishList));
     });
+  }
+
+  FutureOr<void> wishListNavToHomeSuccessEvent(WishListNavToHomeSuccessEvent event, Emitter<WishlistState> emit) {
+    emit(WishListToHomeNavSuccessState());
   }
 }

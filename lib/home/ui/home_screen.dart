@@ -30,10 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
       buildWhen: (previous,current) => current is !HomeActionState,
   listener: (context, state) {
       if(state is HomeToWishListNavigateState){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
           return const WishListScreen();
-        }
-        ));
+        }));
       }else if(state is AddedOrRemovedWishListItemActionState){
          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
       }
