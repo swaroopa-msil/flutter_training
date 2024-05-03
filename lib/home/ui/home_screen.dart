@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:march09/home/bloc/home_bloc.dart';
 
+import '../../utils.dart';
 import '../../widgets/card_item_widget.dart';
 import '../../wishlist/ui/wishlist_screen.dart';
 import '../bloc/home_state.dart';
@@ -20,6 +21,39 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  void listenHomeAction(HomeState state){
+    if(state is HomeToWishListNavigateState){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+        return const WishListScreen();
+      }));
+    }else if(state is AddedOrRemovedWishListItemActionState){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+    }
+  }
+
+  Widget getHomeSuccessUI(HomeState state){
+    final successState = state as HomeLoadingSuccessState;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title:  Text(AppConstants.WatchListLabel),
+        actions: [
+          IconButton(onPressed: (){
+            homeBloc.add(WishListBarClickEvent());
+          }, icon: const Icon(Icons.favorite))
+        ],
+      ),
+      body: ListView.builder(
+          itemCount: successState.groceryItem.length,
+          itemBuilder: (context,index){
+            return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CardItemWidget(groceryItem: successState.groceryItem[index],bloc: homeBloc,)
+            );
+          }),
+    );
+  }
+
 
   final HomeBloc homeBloc = HomeBloc();
   @override
@@ -29,43 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
       listenWhen: (previous,current) => current is HomeActionState,
       buildWhen: (previous,current) => current is !HomeActionState,
   listener: (context, state) {
-      if(state is HomeToWishListNavigateState){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-          return const WishListScreen();
-        }));
-      }else if(state is AddedOrRemovedWishListItemActionState){
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-      }
+    listenHomeAction(state);
   },
   builder: (context, state) {
         switch(state.runtimeType){
           case HomeLoadingState :
-            return Scaffold(
+            return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
-          case HomeLoadingSuccessState:
-            final successState = state as HomeLoadingSuccessState;
-            return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                title: const Text('G-Mart Grocery'),
-                actions: [
-                  IconButton(onPressed: (){
-                    homeBloc.add(WishListBarClickEvent());
-                  }, icon: const Icon(Icons.favorite))
-                ],
-              ),
-              body: ListView.builder(
-                  itemCount: successState.groceryItem.length,
-                  itemBuilder: (context,index){
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CardItemWidget(groceryItem: successState.groceryItem[index],bloc: homeBloc,)
-                    );
-                  }),
-            );
+          case HomeLoadingSuccessState: return getHomeSuccessUI(state);
           case HomeErrorState:
             final error = state as HomeErrorState;
             return Scaffold(

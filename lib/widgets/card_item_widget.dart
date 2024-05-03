@@ -7,10 +7,33 @@ import 'package:march09/wishlist/bloc/wishlist_bloc.dart';
 import '../wishlist/bloc/wishlist_event.dart';
 
 class CardItemWidget extends StatelessWidget {
-  const CardItemWidget({super.key,required this.groceryItem, required this.bloc});
+  const CardItemWidget(
+      {super.key, required this.groceryItem, required this.bloc});
 
   final GroceryItem groceryItem;
   final Bloc bloc;
+
+  void getButtonAction() {
+    if (bloc is HomeBloc) {
+      bloc.add(ItemWishListIconClickEvent(groceryItem: groceryItem));
+    } else if (bloc is WishlistBloc) {
+      bloc.add(RemoveFromWishlistEvent(groceryItem));
+    }
+  }
+
+  Widget getRow(String firstTitle,String secondTitle, double size,FontWeight weight){
+    return Row(
+      children: [
+        Text('Name : $firstTitle',
+            style:  TextStyle(
+                fontWeight: weight, fontSize: size)),
+        const Spacer(),
+        Text('Category : $secondTitle',
+            style:  TextStyle(
+                fontWeight: weight, fontSize: size)),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,43 +42,31 @@ class CardItemWidget extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: Colors.black,width: 1),
+        border: Border.all(color: Colors.black, width: 1),
       ),
       child: Column(
         children: [
-          Image(image: NetworkImage(groceryItem.url),
+          Image(
+            image: NetworkImage(groceryItem.url),
             width: double.infinity,
             fit: BoxFit.fitWidth,
             height: 300,
           ),
+          getRow(groceryItem.title,groceryItem.category,18,FontWeight.bold),
+          getRow(groceryItem.quantity,groceryItem.units,16,FontWeight.w800),
           Row(
             children: [
-              Text('Name : ${groceryItem.title}'),
+              Text('Price : ${groceryItem.price}',style: const TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 18)),
               const SizedBox(width: 5),
-              Text('Category : ${groceryItem.category}'),
-            ],
-          ),
-          Row(
-            children: [
-              Text('Quantity : ${groceryItem.quantity}'),
-              const SizedBox(width: 5),
-              Text('Units : ${groceryItem.units}')
-            ],
-          ),
-          Row(
-            children: [
-               Text('Price : ${groceryItem.price}'),
-              const SizedBox(width: 5),
-              IconButton(onPressed: (){
-                if(bloc is HomeBloc){
-                  bloc.add(ItemWishListIconClickEvent(groceryItem: groceryItem));
-                }else if(bloc is WishlistBloc){
-                  bloc.add(RemoveFromWishlistEvent(groceryItem));
-                }
-              }, icon: Icon(Icons.favorite,color: groceryItem.isWishListed ? Colors.red : Colors.grey,))
+              IconButton(
+                  onPressed: getButtonAction,
+                  icon: Icon(
+                    Icons.favorite,
+                    color: groceryItem.isWishListed ? Colors.red : Colors.grey,
+                  ))
             ],
           )
-
         ],
       ),
     );

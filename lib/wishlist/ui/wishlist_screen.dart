@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:march09/home/ui/home_screen.dart';
+import 'package:march09/utils.dart';
 import 'package:march09/widgets/card_item_widget.dart';
 import 'package:march09/wishlist/bloc/wishlist_bloc.dart';
 
@@ -23,12 +24,33 @@ class _WishListScreenState extends State<WishListScreen> {
     super.initState();
   }
 
+  void listenWishlistAction(WishlistState state) {
+    if (state is WishListToHomeNavSuccessState) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return const HomeScreen();
+      }));
+    }
+  }
+
+  Widget wishlistLoadSuccessUI(WishlistState state){
+    final successState = state as WishlistLoadSuccessState;
+    return ListView.builder(
+        itemCount: successState.groceryItemList.length,
+        itemBuilder: (context,index){
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CardItemWidget(groceryItem:successState.groceryItemList[index],bloc: wishlistBloc),
+          );
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
-        title: Text('Yours Wishlist'),
+        title: Text(AppConstants.WishListLabel),
         actions: [
           IconButton(onPressed: (){
             wishlistBloc.add(WishListNavToHomeSuccessEvent());
@@ -40,25 +62,12 @@ class _WishListScreenState extends State<WishListScreen> {
         listenWhen: (prev,current) => current is WishlistActionState,
         bloc: wishlistBloc,
         listener: (context, state) {
-            if( state is WishListToHomeNavSuccessState){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                return const HomeScreen();
-              }));
-            }
+          listenWishlistAction(state);
         },
         builder: (context, state) {
           switch(state.runtimeType){
             case WishlistLoadSuccessState:
-              final successstate = state as WishlistLoadSuccessState;
-              return ListView.builder(
-                itemCount: successstate.groceryItemList.length,
-                  itemBuilder: (context,index){
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CardItemWidget(groceryItem:successstate.groceryItemList[index],bloc: wishlistBloc,),
-                    );
-                  }
-              );
+              return wishlistLoadSuccessUI(state);
             default: const SizedBox();
           }
           return Container();
