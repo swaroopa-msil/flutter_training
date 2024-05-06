@@ -8,16 +8,18 @@ import '../wishlist/bloc/wishlist_event.dart';
 
 class CardItemWidget extends StatelessWidget {
   const CardItemWidget(
-      {super.key, required this.groceryItem, required this.bloc});
+      {super.key, required this.groceryItem, required this.bloc,required this.hBloc});
 
   final GroceryItem groceryItem;
   final Bloc bloc;
+  final HomeBloc hBloc;
 
   void getButtonAction() {
     if (bloc is HomeBloc) {
       bloc.add(ItemWishListIconClickEvent(groceryItem: groceryItem));
     } else if (bloc is WishlistBloc) {
       bloc.add(RemoveFromWishlistEvent(groceryItem));
+      hBloc.add(RemovedWishlistItemClickEvent(groceryItem: groceryItem));
     }
   }
 

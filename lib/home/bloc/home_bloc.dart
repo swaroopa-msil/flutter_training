@@ -14,6 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeInitialEvent>(homeInitialEvent);
     on<ItemWishListIconClickEvent>(itemWishListIconClickEvent);
     on<WishListBarClickEvent>(wishListBarClickEvent);
+    on<RemovedWishlistItemClickEvent>(removedWishlistItemClickEvent);
   }
 
   FutureOr<void> homeInitialEvent(HomeInitialEvent event, Emitter<HomeState> emit) async{
@@ -59,4 +60,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
 
+
+  FutureOr<void> removedWishlistItemClickEvent(RemovedWishlistItemClickEvent event, Emitter<HomeState> emit) {
+    addToWishListed();
+    emit(HomeLoadingSuccessState(groceryItem: GroceryData.groceryList));
+  }
 }

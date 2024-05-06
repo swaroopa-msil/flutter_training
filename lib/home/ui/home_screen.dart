@@ -23,8 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void listenHomeAction(HomeState state){
     if(state is HomeToWishListNavigateState){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-        return const WishListScreen();
+      Navigator.push(context, MaterialPageRoute(builder: (context){
+        return  WishListScreen(homeBloc: homeBloc);
       }));
     }else if(state is AddedOrRemovedWishListItemActionState){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context,index){
             return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CardItemWidget(groceryItem: successState.groceryItem[index],bloc: homeBloc,)
+                child: CardItemWidget(groceryItem: successState.groceryItem[index],bloc: homeBloc, hBloc: homeBloc)
             );
           }),
     );

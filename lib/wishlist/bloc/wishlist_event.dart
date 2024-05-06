@@ -13,8 +13,6 @@ class WishListLoadedSuccessEvent extends WishlistEvent{
 
 }
 
-class WishListNavToHomeSuccessEvent extends WishlistEvent{
-}
 
 
 

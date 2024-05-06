@@ -12,14 +12,9 @@ class WishlistBloc extends Bloc<WishlistEvent, WishlistState> {
     on<WishListLoadedSuccessEvent>((event, emit) {
        emit(WishlistLoadSuccessState(groceryItemList: GroceryData.groceryWishList));
     });
-    on<WishListNavToHomeSuccessEvent>(wishListNavToHomeSuccessEvent);
     on<RemoveFromWishlistEvent>((event, emit){
       GroceryData.groceryWishList.remove(event.groceryItem);
       emit(WishlistLoadSuccessState(groceryItemList: GroceryData.groceryWishList));
     });
-  }
-
-  FutureOr<void> wishListNavToHomeSuccessEvent(WishListNavToHomeSuccessEvent event, Emitter<WishlistState> emit) {
-    emit(WishListToHomeNavSuccessState());
   }
 }

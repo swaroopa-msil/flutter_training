@@ -15,3 +15,9 @@ class ItemWishListIconClickEvent extends HomeEvent{
       required this.groceryItem
 });
 }
+class RemovedWishlistItemClickEvent extends HomeEvent{
+  final GroceryItem groceryItem;
+  RemovedWishlistItemClickEvent({
+    required this.groceryItem
+  });
+}
