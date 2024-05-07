@@ -6,13 +6,14 @@ import '../bloc/home_event.dart';
 
 class HexagonShapeWidget extends StatelessWidget {
   const HexagonShapeWidget({super.key,required this.boxWidth,required this.borderColor1,required this.borderColor2,
-    required this.textData , required this.homeBloc, required this.details
+    required this.textData , required this.homeBloc, required this.details, required this.boxHeight
   });
 
   final Color borderColor1;
   final Color borderColor2;
   final String textData;
   final double boxWidth;
+  final double boxHeight;
   final HomeBloc homeBloc;
   final String details;
 
@@ -27,7 +28,7 @@ class HexagonShapeWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
            SizedBox(
-             width: boxWidth+10,
+             width: boxWidth,
              child: CustomPaint(
                   painter: HexagonPainter(borderColor1: const Color.fromARGB(
                       121, 203, 195, 195),borderColor2: const Color.fromARGB(
@@ -35,8 +36,8 @@ class HexagonShapeWidget extends StatelessWidget {
                 ),
            ),
             SizedBox(
-              width: boxWidth,
-              height: 100,
+              width: boxWidth-10,
+              height: boxHeight,
                 child: CustomPaint(
                   painter: HexagonPainter(borderColor1: borderColor1,borderColor2: borderColor2,strokeSize: 8),
                 ),

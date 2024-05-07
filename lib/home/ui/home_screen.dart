@@ -25,8 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   double strokeWidth = 10;
   double hexagonWidth = 80;
   double hexagonHeight = 100;
-  double initialHorizPad = 20;
-  double verticalPadding = 20;
+  double initialHorizontalPadding = 10;
+  double initialVerticalPadding = 10;
 
   final HomeBloc homeBloc = HomeBloc();
 
@@ -46,21 +46,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderColor1: WidgetDetails.colorMap[list[0].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[0].key]!.last,
                 textData: list[0].Title,
-                boxWidth: boxIntervalSpaces,homeBloc: homeBloc,details: list[0].details),
+                boxWidth: hexagonWidth,homeBloc: homeBloc,details: list[0].details,boxHeight: hexagonHeight),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
                 borderColor1: WidgetDetails.colorMap[list[1].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[1].key]!.last,
                 textData: list[1].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details: list[1].details),
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details: list[1].details,
+                boxHeight: hexagonHeight),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
                 borderColor1: WidgetDetails.colorMap[list[2].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[2].key]!.last,
                 textData: list[2].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details: list[1].details)
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details: list[1].details,
+                boxHeight: hexagonHeight)
           ],
         ),
         Row(
@@ -70,15 +72,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderColor1: WidgetDetails.colorMap[list[3].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[3].key]!.last,
                 textData: list[3].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details: list[1].details),
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details: list[1].details,
+                boxHeight: hexagonHeight),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
                 borderColor1: WidgetDetails.colorMap[list[4].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[4].key]!.last,
                 textData: list[4].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details:list[4].details),
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details:list[4].details,
+                boxHeight: hexagonHeight),
           ],
         ),
         Row(
@@ -88,15 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderColor1: WidgetDetails.colorMap[list[5].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[5].key]!.last,
                 textData: list[5].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details:list[5].details),
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details:list[5].details,
+                boxHeight: hexagonHeight),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
                 borderColor1: WidgetDetails.colorMap[list[6].key]!.first,
                 borderColor2:WidgetDetails.colorMap[list[6].key]!.last,
                 textData: list[6].Title,
-                boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details:list[5].details),
+                boxWidth: hexagonWidth,
+                homeBloc: homeBloc,details:list[5].details,
+                boxHeight: hexagonHeight),
           ],
         ),
       ],
@@ -118,6 +124,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final l1XStarter  = hexagonWidth + initialHorizontalPadding;
+    final l1YStarter  = (3/5 * hexagonHeight + initialVerticalPadding);
+    final l1XFooter  = (hexagonWidth + hexagonWidth / 2);
+    final l1YFooter  = (hexagonHeight + initialVerticalPadding);
+    final l2XStarter = l1XStarter + boxIntervalSpaces + initialHorizontalPadding;
+    final l2XFooter =  l1XStarter + hexagonWidth/2 ;
+    final l3XStarter = l1XStarter + boxIntervalSpaces + hexagonWidth;
+    final l3XFooter =  l3XStarter + hexagonWidth/2;
+    final l4XStarter = 2*(l1XStarter +boxIntervalSpaces );
+    final l5YStarter =  2*hexagonHeight - initialVerticalPadding;
+    final l5YFooter =   l1YFooter + hexagonHeight ;
+
     return BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,
       listenWhen: (previous,current) => current is HomeActionState,
@@ -142,40 +161,40 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           drawHexagonTreeWidget(succState.widgetModelList),
                           drawConnectionDottedLine(
-                              hexagonWidth + initialHorizPad / 2,
-                              (3/5 * hexagonHeight + verticalPadding / 2),
-                              (hexagonWidth + hexagonWidth / 2),
-                              (hexagonHeight + verticalPadding / 2),
+                              l1XStarter,
+                              l1YStarter,
+                              l1XFooter,
+                              l1YFooter,
                               const Color.fromARGB(245, 243, 131, 6)),
                           drawConnectionDottedLine(
-                              hexagonWidth + boxIntervalSpaces + initialHorizPad,
-                              (3/5 * hexagonHeight +verticalPadding / 2 ),
-                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
-                              (hexagonHeight + verticalPadding / 2),
+                              l2XStarter,
+                              l1YStarter,
+                              l2XFooter,
+                              l1YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                           drawConnectionDottedLine(
-                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2,
-                              (3/5 * hexagonHeight +verticalPadding / 2 ),
-                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
-                              (hexagonHeight + verticalPadding / 2),
+                              l3XStarter,
+                              l1YStarter,
+                              l3XFooter,
+                              l1YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                           drawConnectionDottedLine(
-                              2*hexagonWidth + 2*boxIntervalSpaces + initialHorizPad,
-                              (3/5 * hexagonHeight +verticalPadding / 2 ),
-                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
-                              (hexagonHeight + verticalPadding / 2),
+                              l4XStarter,
+                              l1YStarter,
+                              l3XFooter,
+                              l1YFooter,
                               const Color.fromARGB(245, 243, 131, 6)),
                           drawConnectionDottedLine(
-                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
-                              2*hexagonHeight - (verticalPadding / 2),
-                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
-                              (2 * hexagonHeight) + (verticalPadding / 2),
+                              l2XFooter,
+                              l5YStarter,
+                              l2XFooter,
+                              l5YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                           drawConnectionDottedLine(
-                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
-                              2*hexagonHeight - (verticalPadding / 2),
-                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
-                              (2 * hexagonHeight) + (verticalPadding / 2),
+                              l3XFooter,
+                              l5YStarter,
+                              l3XFooter,
+                              l5YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                         ],
                       ),
