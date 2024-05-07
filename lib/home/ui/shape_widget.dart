@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:march09/home/bloc/home_bloc.dart';
+import 'package:march09/model/widget_model.dart';
 
 import '../../utils/hexagon_painter.dart';
 import '../bloc/home_event.dart';
 
 class HexagonShapeWidget extends StatelessWidget {
-  const HexagonShapeWidget({super.key,required this.boxWidth,required this.borderColor1,required this.borderColor2,
-    required this.textData , required this.homeBloc, required this.details, required this.boxHeight
+  const HexagonShapeWidget({super.key,required this.boxWidth,required this.borderColor,
+    required this.model , required this.homeBloc, required this.boxHeight
   });
 
-  final Color borderColor1;
-  final Color borderColor2;
-  final String textData;
+  final List<Color> borderColor;
+  final WidgetModel model;
   final double boxWidth;
   final double boxHeight;
   final HomeBloc homeBloc;
-  final String details;
 
   @override
   Widget build(BuildContext context) {
     return
      GestureDetector(
        onTap: (){
-         homeBloc.add(WidgetClickNavigationEvent(detailsData: details));
+         homeBloc.add(WidgetClickNavigationEvent(detailsData: model.details));
        },
        child: Stack(
           alignment: Alignment.center,
@@ -39,11 +38,11 @@ class HexagonShapeWidget extends StatelessWidget {
               width: boxWidth-10,
               height: boxHeight,
                 child: CustomPaint(
-                  painter: HexagonPainter(borderColor1: borderColor1,borderColor2: borderColor2,strokeSize: 8),
+                  painter: HexagonPainter(borderColor1: borderColor[0],borderColor2: borderColor[1],strokeSize: 8),
                 ),
 
             ),
-            Text(textData,style: const TextStyle(fontSize: 10,fontWeight: FontWeight.bold))
+            Text(model.Title,style: const TextStyle(fontSize: 10,fontWeight: FontWeight.bold))
           ],
        ),
      );
