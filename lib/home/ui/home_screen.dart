@@ -23,10 +23,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double boxIntervalSpaces = 70;
   double strokeWidth = 10;
-  double outerBoxWidthSide = 80;
-  double boxHeightSide = 100;
-  double initialPaddingHorizontal = 20;
-  double initialPaddingVertical = 20;
+  double hexagonWidth = 80;
+  double hexagonHeight = 100;
+  double initialHorizPad = 20;
+  double verticalPadding = 20;
 
   final HomeBloc homeBloc = HomeBloc();
 
@@ -35,19 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     homeBloc.add(HomeInitialEvent());
     super.initState();
   }
-
-  // Widget getRow(int count,List<WidgetModel> list){
-  //   Widget w = Text(data);
-  //   for(int i=0;i<3;i++){
-  //     w = HexagonShapeWidget(
-  //         borderColor1: WidgetDetails.colorMap[list[i].key]!.first,
-  //         borderColor2:WidgetDetails.colorMap[list[i].key]!.last,
-  //         textData: list[i].Title,
-  //         boxWidth: boxIntervalSpaces,homeBloc: homeBloc,details: list[i].details);
-  //   SizedBox(width: boxIntervalSpaces);
-  //   }
-  //   return w;
-  // }
 
   Widget drawHexagonTreeWidget(List<WidgetModel> list){
     return Column(
@@ -62,66 +49,54 @@ class _HomeScreenState extends State<HomeScreen> {
                 boxWidth: boxIntervalSpaces,homeBloc: homeBloc,details: list[0].details),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(245, 81, 127, 245),
-                borderColor2:
-                const Color.fromARGB(245, 9, 17, 143),
+                borderColor1: WidgetDetails.colorMap[list[1].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[1].key]!.last,
+                textData: list[1].Title,
                 boxWidth: boxIntervalSpaces,
-                textData: 'Animation\nController',
-                homeBloc: homeBloc,details: 'Details of  animation Controller'),
+                homeBloc: homeBloc,details: list[1].details),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(255, 234, 207, 37),
-                borderColor2:
-                const Color.fromARGB(245, 243, 131, 6),
+                borderColor1: WidgetDetails.colorMap[list[2].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[2].key]!.last,
+                textData: list[2].Title,
                 boxWidth: boxIntervalSpaces,
-                textData: 'Tween(s)',
-                homeBloc: homeBloc,details: 'Details of  Tween')
+                homeBloc: homeBloc,details: list[1].details)
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(245, 81, 127, 245),
-                borderColor2:
-                const Color.fromARGB(245, 9, 17, 143),
-                textData: 'Animation',
+                borderColor1: WidgetDetails.colorMap[list[3].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[3].key]!.last,
+                textData: list[3].Title,
                 boxWidth: boxIntervalSpaces,
-                homeBloc: homeBloc,details: 'Details of  Animation'),
+                homeBloc: homeBloc,details: list[1].details),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(245, 81, 127, 245),
-                borderColor2:
-                const Color.fromARGB(245, 9, 17, 143),
+                borderColor1: WidgetDetails.colorMap[list[4].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[4].key]!.last,
+                textData: list[4].Title,
                 boxWidth: boxIntervalSpaces,
-                textData: 'Animation',
-                homeBloc: homeBloc,details: 'Details of  Animation'),
+                homeBloc: homeBloc,details:list[4].details),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(245, 243, 9, 224),
-                borderColor2:
-                const Color.fromARGB(245, 138, 7, 189),
+                borderColor1: WidgetDetails.colorMap[list[5].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[5].key]!.last,
+                textData: list[5].Title,
                 boxWidth: boxIntervalSpaces,
-                textData: 'Widget',
-                homeBloc: homeBloc,details: 'Details of  Widget'),
+                homeBloc: homeBloc,details:list[5].details),
             SizedBox(width: boxIntervalSpaces),
             HexagonShapeWidget(
-                borderColor1:
-                const Color.fromARGB(245, 243, 9, 224),
-                borderColor2:
-                const Color.fromARGB(245, 138, 7, 189),
+                borderColor1: WidgetDetails.colorMap[list[6].key]!.first,
+                borderColor2:WidgetDetails.colorMap[list[6].key]!.last,
+                textData: list[6].Title,
                 boxWidth: boxIntervalSpaces,
-                textData: 'Widget',
-                homeBloc: homeBloc,details: 'Details of  Widget'),
+                homeBloc: homeBloc,details:list[5].details),
           ],
         ),
       ],
@@ -150,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
   listener: (context, state) {
     if(state is HomeToWidgetDetailState){
       Navigator.of(context).push(MaterialPageRoute(builder: (context){
-        return const DetailsScreen();
+        return  DetailsScreen(description: state.description);
       }));
     }
   },
@@ -166,20 +141,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       parentChild: Stack(
                         children: [
                           drawHexagonTreeWidget(succState.widgetModelList),
-                          drawConnectionDottedLine(boxIntervalSpaces + initialPaddingHorizontal,boxIntervalSpaces,2 * boxIntervalSpaces,boxHeightSide + strokeWidth,const Color.fromARGB(245, 243, 131, 6)),
-                          drawConnectionDottedLine(boxHeightSide + boxIntervalSpaces,boxIntervalSpaces,boxIntervalSpaces +
-                              (outerBoxWidthSide - initialPaddingHorizontal),boxHeightSide + strokeWidth,const Color.fromARGB(245, 9, 17, 143)),
-                          drawConnectionDottedLine((outerBoxWidthSide - initialPaddingHorizontal) * 4,boxIntervalSpaces,boxHeightSide + (5 * boxIntervalSpaces) / 2,boxHeightSide + strokeWidth,
+                          drawConnectionDottedLine(
+                              hexagonWidth + initialHorizPad / 2,
+                              (3/5 * hexagonHeight + verticalPadding / 2),
+                              (hexagonWidth + hexagonWidth / 2),
+                              (hexagonHeight + verticalPadding / 2),
+                              const Color.fromARGB(245, 243, 131, 6)),
+                          drawConnectionDottedLine(
+                              hexagonWidth + boxIntervalSpaces + initialHorizPad,
+                              (3/5 * hexagonHeight +verticalPadding / 2 ),
+                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
+                              (hexagonHeight + verticalPadding / 2),
                               const Color.fromARGB(245, 9, 17, 143)),
-                          drawConnectionDottedLine(outerBoxWidthSide * 4,boxIntervalSpaces,4 * boxIntervalSpaces,boxHeightSide + strokeWidth,const Color.fromARGB(245, 243, 131, 6)),
-                          drawConnectionDottedLine(boxIntervalSpaces +
-                              (outerBoxWidthSide - initialPaddingHorizontal), boxHeightSide +
-                              boxIntervalSpaces +
-                              initialPaddingVertical,boxIntervalSpaces +
-                              (outerBoxWidthSide - initialPaddingHorizontal),(2 * boxHeightSide) + (initialPaddingVertical / 2),const Color.fromARGB(245, 9, 17, 143)),
-                          drawConnectionDottedLine( 4 * boxIntervalSpaces,boxHeightSide +
-                              boxIntervalSpaces +
-                              initialPaddingVertical, 4 * boxIntervalSpaces,(2 * boxHeightSide) + (initialPaddingVertical / 2),const Color.fromARGB(245, 9, 17, 143)),
+                          drawConnectionDottedLine(
+                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2,
+                              (3/5 * hexagonHeight +verticalPadding / 2 ),
+                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
+                              (hexagonHeight + verticalPadding / 2),
+                              const Color.fromARGB(245, 9, 17, 143)),
+                          drawConnectionDottedLine(
+                              2*hexagonWidth + 2*boxIntervalSpaces + initialHorizPad,
+                              (3/5 * hexagonHeight +verticalPadding / 2 ),
+                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
+                              (hexagonHeight + verticalPadding / 2),
+                              const Color.fromARGB(245, 243, 131, 6)),
+                          drawConnectionDottedLine(
+                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
+                              2*hexagonHeight - (verticalPadding / 2),
+                              hexagonWidth + hexagonWidth/2 + initialHorizPad/2,
+                              (2 * hexagonHeight) + (verticalPadding / 2),
+                              const Color.fromARGB(245, 9, 17, 143)),
+                          drawConnectionDottedLine(
+                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
+                              2*hexagonHeight - (verticalPadding / 2),
+                              hexagonWidth*2 + boxIntervalSpaces + initialHorizPad/2 + hexagonWidth/2,
+                              (2 * hexagonHeight) + (verticalPadding / 2),
+                              const Color.fromARGB(245, 9, 17, 143)),
                         ],
                       ),
                     )),

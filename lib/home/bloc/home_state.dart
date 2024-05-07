@@ -11,7 +11,10 @@ class HomeSuccessLoadingState extends HomeState {
     required this.widgetModelList
 });
 }
-class HomeToWidgetDetailState extends HomeActionState {}
+class HomeToWidgetDetailState extends HomeActionState {
+  final String description;
+  HomeToWidgetDetailState({required this.description });
+}
 
 
 

@@ -20,6 +20,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   FutureOr<void> widgetClickNavigationEvent(WidgetClickNavigationEvent event, Emitter<HomeState> emit) {
-    emit(HomeToWidgetDetailState());
+    emit(HomeToWidgetDetailState(description: event.detailsData));
   }
 }
