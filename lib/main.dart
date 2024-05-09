@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:march09/provider/rating_change_provider.dart';
+import 'package:march09/ui/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0),
+    seedColor: const Color.fromARGB(255, 0, 85, 131),
   ),
   textTheme: GoogleFonts.latoTextTheme(),
 );
 
 void main() {
-  runApp(const ProviderScope(child: App()));
+  runApp( const App());
 }
 
 class App extends StatelessWidget {
@@ -20,6 +21,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: theme, home: const Text("main"));
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => RatingChangeProvider() )
+    ],
+    child: MaterialApp(theme: theme,
+        debugShowCheckedModeBanner: false,
+        home: const HomeScreen()));
   }
 }
