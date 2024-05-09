@@ -56,3 +56,20 @@ class HexagonPainter extends CustomPainter{
 
 }
 
+
+//    for (int i = 1; i < 6; i++) {
+//     double x = centerX + (radius) * cos((angle) * i);
+//     double y = centerY + (radius) * sin((angle) * i);
+//
+//       double curvX = centerX + (radius) * cos((angle) * i+1);
+//       double curvY = centerY + (radius) * sin((angle) * i+1);
+//
+//       if(i==1){
+//         path.lineTo(x, y+1);
+//       }
+//       else{
+//         path.lineTo(x+1, y+1);
+//       }
+//     path.quadraticBezierTo(x+1,y+1,
+//         curvX+1, curvY+1);
+//     }

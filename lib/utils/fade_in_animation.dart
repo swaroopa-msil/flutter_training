@@ -19,7 +19,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
     super.initState();
     controller = AnimationController(
         duration: const Duration(milliseconds: 3000), vsync: this);
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+    animation = CurvedAnimation(parent: controller, curve: Curves.easeInToLinear);
     controller.forward();
   }
 
