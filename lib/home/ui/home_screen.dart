@@ -81,15 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final l1XStarter  = _hexagonWidth + _initialHorizontalPadding;
     final l1YStarter  = (3/5 * _hexagonHeight + _initialVerticalPadding);
-    final l1XFooter  = (_hexagonWidth + _hexagonWidth / 2);
+    final l1XFooter  = l1XStarter + _hexagonWidth / 2;
     final l1YFooter  = (_hexagonHeight + _initialVerticalPadding);
     final l2XStarter = l1XStarter + _boxIntervalSpaces + _initialHorizontalPadding;
-    final l2XFooter =  l1XStarter + _hexagonWidth/2 ;
-    final l3XStarter = l1XStarter + _boxIntervalSpaces + _hexagonWidth;
+    final l3XStarter = l2XStarter  + (_hexagonWidth - _initialHorizontalPadding);
     final l3XFooter =  l3XStarter + _hexagonWidth/2;
-    final l4XStarter = 2*(l1XStarter +_boxIntervalSpaces );
+    final l4XStarter = l3XStarter + _boxIntervalSpaces + _initialHorizontalPadding;
     final l5YStarter =  2*_hexagonHeight - _initialVerticalPadding;
-    final l5YFooter =   l1YFooter + _hexagonHeight ;
+    final l5YFooter =   l5YStarter +  2*_initialVerticalPadding;
     provider.getWidgetList();
             return Scaffold(
               body: SafeArea(
@@ -108,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _rawConnectionDottedLine(
                               l2XStarter,
                               l1YStarter,
-                              l2XFooter,
+                              l1XFooter,
                               l1YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                           _rawConnectionDottedLine(
@@ -124,9 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               l1YFooter,
                               const Color.fromARGB(245, 243, 131, 6)),
                           _rawConnectionDottedLine(
-                              l2XFooter,
+                              l1XFooter,
                               l5YStarter,
-                              l2XFooter,
+                              l1XFooter,
                               l5YFooter,
                               const Color.fromARGB(245, 9, 17, 143)),
                           _rawConnectionDottedLine(
