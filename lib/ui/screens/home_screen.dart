@@ -35,7 +35,10 @@ class HomeScreen extends StatelessWidget {
         return AppConstants.RATE_FIELD_CAN_NOT_LEAVE_EMPTY;
       }
       final rate = double.parse(value);
-      if(rate > 6){
+      if(rate == 0){
+        return AppConstants.PLEASE_ENTER_A_MINIMUM_RATING;
+      }
+      else if(rate > 6){
         return AppConstants.PLEASE_ENTER_A_RATING;
       }
       return null;

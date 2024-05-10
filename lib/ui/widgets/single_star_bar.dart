@@ -16,7 +16,7 @@ class SingleStar extends StatelessWidget {
       child: Stack(
         fit: StackFit.loose,
         children: [
-           const Icon(Icons.star,color: Colors.blue,size: starSize),
+           const Icon(Icons.star,color: Colors.yellow,size: starSize),
           ClipRect(
             clipper: StarClipper(
                 part: fillAmount
