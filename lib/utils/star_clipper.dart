@@ -7,7 +7,6 @@ class StarClipper extends CustomClipper<Rect>{
   
   @override
   getClip(Size size) {
-  print('clipper part $part and ${size.width}');
    return Rect.fromLTRB((size.width)*part,0.0, size.width, size.height);
   }
 

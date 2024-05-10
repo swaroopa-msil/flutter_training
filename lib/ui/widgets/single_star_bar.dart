@@ -10,19 +10,19 @@ class SingleStar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+   const double starSize = 40;
     return SizedBox(
-      height: 40,
-      width: 40,
+      height: starSize,
+      width: starSize,
       child: Stack(
         fit: StackFit.loose,
         children: [
-          const Icon(Icons.star,color: Colors.blue,size: 40),
+           const Icon(Icons.star,color: Colors.blue,size: starSize),
           ClipRect(
             clipper: StarClipper(
                 part: fillAmount
             ),
-            child: const Icon(Icons.star,color: Colors.grey,size: 40),
+            child:  const Icon(Icons.star,color: Colors.grey,size: starSize),
           )
         ],
       ),

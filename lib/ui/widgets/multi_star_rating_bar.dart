@@ -23,6 +23,13 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
   double _fullStar = 0;
   double _partialStar = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    buildStarRow(widget.rating);
+  }
+
+  // for creating animation and controllers for each stars
   void buildStarRow(double currentRatings){
 
     _fullStar = currentRatings.floor().toDouble();  // 3
@@ -30,12 +37,9 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
 
     var end = 1.0;
     for(int i=0 ; i< _starCount ; i++){
-      if( _fullStar > 0 ){
-        _fullStar --;
-      } else {
-        if(end != 0){
+
+      if(i >= _fullStar && end != 0){ // partial stars
           end = _partialStar;
-        }
       }
 
       var controller = AnimationController(
@@ -50,17 +54,17 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
       ).animate(controller);
       _animationList.add(colorAnimation);
 
-      var singleStar = SingleStar(pos: i , fillAmount: controller.value,);
+      var singleStar = SingleStar(pos: i , fillAmount: controller.value);
       _startWidgetList.add(singleStar);
 
-      if(end < 1.0){
+      if(end < 1.0){ // empty stars
         end = 0.0;
       }
     }
-
+    controllerCall(0);
   }
 
-
+// for starting next animation when current one finishes
   void controllerCall(int i){
     _controllersList[i].addListener(() {
       setState(() {
@@ -76,15 +80,6 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
 
       });
     _controllersList[i].forward();
-
-  }
-
-
-  @override
-  void initState() {
-    super.initState();
-    buildStarRow(widget.rating);
-    controllerCall(0);
   }
 
   @override
@@ -99,7 +94,9 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
 
   @override
   void dispose() {
-    _controllersList[0].dispose();
+    for(int i =0; i< _starCount ; i++ ){
+      _controllersList[i].dispose();
+    }
     super.dispose();
   }
 

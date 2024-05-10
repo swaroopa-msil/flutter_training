@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:march09/utils/app_constants.dart';
 
 import '../widgets/multi_star_rating_bar.dart';
 
@@ -13,14 +14,14 @@ class HomeScreen extends StatelessWidget {
       return  showDialog(context: context,
           builder: (context){
             return  AlertDialog(
-              title: Text('Thank you'),
+              title: Text(AppConstants.THANK_YOU_TEXT),
               content: MultiStarRatingBar(rating:double.parse(value)),
               actions:<Widget>[
                 TextButton(
                     onPressed: (){
                       Navigator.of(context).pop();
                     },
-                    child: Text('OK'))
+                    child: Text(AppConstants.OK_BUTTON_TEXT))
               ],
             );
           }
@@ -29,11 +30,11 @@ class HomeScreen extends StatelessWidget {
 
     String? validateRateFiled(String? value){
       if(value?.isEmpty == true || value ==  null){
-        return 'Rate field can not leave empty';
+        return AppConstants.RATE_FIELD_CAN_NOT_LEAVE_EMPTY;
       }
       final rate = double.parse(value);
       if(rate > 6){
-        return 'Please enter a rating maximum of 5';
+        return AppConstants.PLEASE_ENTER_A_RATING;
       }
       return null;
     }
@@ -48,15 +49,15 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Please Rate us with 0 to 5',
+                Text(AppConstants.RATE_US_HEAD_LINE,
                     style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary)),
                 const SizedBox(height:10),
                 TextFormField(
                   controller: controller,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter your rating here',
+                  decoration:  InputDecoration(
+                    labelText: AppConstants.ENTER_YOUR_RATING_HERE,
                   ),
                   validator: (value) {
                       return validateRateFiled(value);
@@ -68,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                      openAlertDialog(context,controller.text);
                      controller.clear();
                   }
-                }, child: const Text('Submit'),
+                }, child:  Text(AppConstants.SUBMIT_BUTTON_TEXT,style: const TextStyle(fontWeight: FontWeight.bold)),
                 )
               ],
             ),
