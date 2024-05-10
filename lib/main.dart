@@ -13,7 +13,7 @@ final theme = ThemeData(
 );
 
 void main() {
-  runApp( const App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -21,11 +21,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => RatingChangeProvider() )
-    ],
-    child: MaterialApp(theme: theme,
-        debugShowCheckedModeBanner: false,
-        home: const HomeScreen()));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => RatingChangeProvider())
+        ],
+        child: MaterialApp(
+            theme: theme,
+            debugShowCheckedModeBanner: false,
+            home: const HomeScreen()));
   }
 }
