@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:march09/home/provider/widget_data_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'home/ui/home_screen.dart';
 
@@ -13,7 +14,7 @@ final theme = ThemeData(
 );
 
 void main() {
-  runApp(const ProviderScope(child: App()));
+  runApp(const  App());
 }
 
 class App extends StatelessWidget {
@@ -21,7 +22,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: theme,
-        home: HomeScreen());
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => WidgetDataProvider())
+    ],
+    child: MaterialApp(theme: theme,
+        home: HomeScreen())
+    );
   }
 }
