@@ -26,7 +26,7 @@ class App extends StatelessWidget {
       ChangeNotifierProvider(create: (_) => WidgetDataProvider())
     ],
     child: MaterialApp(theme: theme,
-        home: HomeScreen())
+        home: const HomeScreen())
     );
   }
 }

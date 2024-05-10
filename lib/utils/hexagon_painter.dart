@@ -34,14 +34,15 @@ class HexagonPainter extends CustomPainter{
     double angle = (2 * pi) / 6;
     path.moveTo((centerX + radius * cos(angle * 0)),(centerY + radius * sin(angle * 0)));
 
-    for (int i = 1; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
       double x = centerX + radius * cos(angle * i);
       double y = centerY + radius * sin(angle * i);
 
-       path.lineTo(x, y);
-        // path.quadraticBezierTo(centerX,size.height,
-        //     size.width,centerY);
+      double nexX = centerX + radius * cos(angle * i + 1);
+      double nexY = centerY + radius * sin(angle * i + 1);
 
+      path.lineTo(x, y);
+      path.quadraticBezierTo(x, y, nexX, nexY);
     }
 
     path.close();
