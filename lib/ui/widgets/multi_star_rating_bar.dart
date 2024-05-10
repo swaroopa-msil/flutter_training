@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:march09/provider/rating_change_provider.dart';
 import 'package:march09/ui/widgets/single_star_bar.dart';
+import 'package:provider/provider.dart';
+
 
 
 
 class MultiStarRatingBar extends StatefulWidget {
-  const MultiStarRatingBar({super.key, required this.rating});
+  const MultiStarRatingBar({super.key, required this.provider});
 
-  final double rating ;
+  final RatingChangeProvider provider;
 
   @override
   State<MultiStarRatingBar> createState() => _MultiStarRatingBarState();
@@ -15,47 +18,38 @@ class MultiStarRatingBar extends StatefulWidget {
 
 class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProviderStateMixin {
   final int _starCount = 5;
-  final Duration _duration = const Duration(seconds: 1);
-  final List<Widget> _startWidgetList = [];
   final List<AnimationController> _controllersList = [];
   final List<Animation<num>> _animationList = [];
-
-  double _fullStar = 0;
-  double _partialStar = 0;
 
   @override
   void initState() {
     super.initState();
-    buildStarRow(widget.rating);
+    buildStarRow(widget.provider.rating);
   }
 
   // for creating animation and controllers for each stars
   void buildStarRow(double currentRatings){
 
-    _fullStar = currentRatings.floor().toDouble();  // 3
-    _partialStar = currentRatings - _fullStar;  // 0.6
+    double fullStar = currentRatings.floor().toDouble();  // 3
+    double partialStar = currentRatings - fullStar;  // 0.6
 
     var end = 1.0;
     for(int i=0 ; i< _starCount ; i++){
 
-      if(i >= _fullStar && end != 0){ // partial stars
-          end = _partialStar;
+      if(i >= fullStar && end != 0){ // partial stars
+          end = partialStar;
       }
 
       var controller = AnimationController(
         vsync: this,
-        duration: _duration,
+        duration: const Duration(seconds: 1),
       );
-      _controllersList.add(controller);
+       _controllersList.add(controller);
 
-      var colorAnimation = Tween(
+      _animationList.add(Tween(
         begin: 0.0,
         end:  end ,
-      ).animate(controller);
-      _animationList.add(colorAnimation);
-
-      var singleStar = SingleStar(pos: i , fillAmount: controller.value);
-      _startWidgetList.add(singleStar);
+      ).animate(controller));
 
       if(end < 1.0){ // empty stars
         end = 0.0;
@@ -66,28 +60,35 @@ class _MultiStarRatingBarState extends State<MultiStarRatingBar> with TickerProv
 
 // for starting next animation when current one finishes
   void controllerCall(int i){
-    _controllersList[i].addListener(() {
-      setState(() {
-      });
+    final controller =  _controllersList[i];
+    final animation = _animationList[i];
+
+    controller.addListener(() {
+      widget.provider.updateRating(controller.value);
     });
 
-    _animationList[i].addListener(() {
-      if(_animationList[i].isCompleted){
+    animation.addListener(() {
+      if(animation.isCompleted){
         if(i < (_starCount-1)){
           controllerCall(i+1);
         }
       }
 
       });
-    _controllersList[i].forward();
+    controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(_animationList.length, (index) {
-        return SingleStar(pos: 0 , fillAmount: _animationList[index].value.toDouble());
+      children: List.generate(_starCount, (index) {
+      return Consumer(builder: (BuildContext context,
+          RatingChangeProvider provider, Widget? child)
+      {
+        provider = widget.provider;
+        return SingleStar(fillAmount: _animationList[index].value.toDouble());
+      });
       })
     );
   }

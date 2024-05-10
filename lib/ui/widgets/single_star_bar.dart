@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../../utils/star_clipper.dart';
 
 class SingleStar extends StatelessWidget {
-  const SingleStar({super.key, required this.pos, required this.fillAmount});
+  const SingleStar({super.key, required this.fillAmount});
 
-  final int pos;
   final double fillAmount;
 
   @override
