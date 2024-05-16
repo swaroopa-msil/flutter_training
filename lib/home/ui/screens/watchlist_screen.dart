@@ -13,7 +13,7 @@ class WatchlistScreen extends StatelessWidget {
         controller: scrollController,
       itemCount: contactList.length,
         itemBuilder: (context,index){
-      return Expanded(child: WatchlistItem(item: contactList[index]));
+      return WatchlistItem(item: contactList[index]);
     }
     );
   }
