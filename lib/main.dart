@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'home/ui/screens/home_screen.dart';
 
@@ -7,8 +6,7 @@ final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(255, 0, 85, 131),
-  ),
-  textTheme: GoogleFonts.latoTextTheme(),
+  )
 );
 
 void main() {

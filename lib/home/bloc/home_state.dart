@@ -19,9 +19,16 @@ class HomeLoadingError extends HomeState{
 });
 }
 
-class SortDialogLoadingSuccess extends HomeActionState{
+class SortIconSelectionStatus extends HomeState{
   final Sorting selectedLabel;
-  SortDialogLoadingSuccess({
+  SortIconSelectionStatus({
+    required this.selectedLabel
+  });
+}
+
+class NavigateToSortingDialog extends HomeActionState{
+  final Sorting selectedLabel;
+  NavigateToSortingDialog({
     required this.selectedLabel
   });
 }

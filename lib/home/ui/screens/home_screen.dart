@@ -89,13 +89,14 @@ class _HomeScreenState extends State<HomeScreen>
       listenWhen: (prev,curr) => curr is HomeActionState,
       buildWhen: (prev,curr) => curr is !HomeActionState,
       listener: (context, state) {
-       if(state is SortDialogLoadingSuccess){
+       if(state is NavigateToSortingDialog){
          _openSortingBottomSheet(context);
        }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            title:  const Text(AppConstant.TITLE_CONTACT_LOG),
             bottom: TabBar(
               controller: _tabControl,
               labelPadding: const EdgeInsets.symmetric(horizontal: 5.0),

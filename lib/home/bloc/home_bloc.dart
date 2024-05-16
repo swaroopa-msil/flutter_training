@@ -39,9 +39,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
     contactTabList.add(contactLogList.sublist(start,end));
   }
 
-  FutureOr<void> initialDataLoadingEvent(InitialDataLoadingEvent event, Emitter<HomeState> emit) async {
+  initialDataLoadingEvent(InitialDataLoadingEvent event, Emitter<HomeState> emit) async {
      emit(HomeLoading());
-     Future.delayed(const Duration(seconds: 1));
      final List<ContactModel>? list = await _homeRepo.getContactDataFromServer();
      if(list != null){
        contactLogList.addAll(list);
@@ -68,18 +67,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
         break;
       case Sorting.DESCBYCONTACT:
         contactTabList[currentTab].sort((item1,item2) => sortStringWithNumeric(normalizePhoneNumber(item2.contact),normalizePhoneNumber(item1.contact)));
+        break;
       default :
 
     }
   }
 
   FutureOr<void> floatingSortButtonClickedEvent(FloatingSortButtonClickedEvent event, Emitter<HomeState> emit) {
-    emit(SortDialogLoadingSuccess(selectedLabel: selectedLabel[currentTab]));
+    emit(NavigateToSortingDialog(selectedLabel: selectedLabel[currentTab]));
   }
 
   FutureOr<void> sortAscOrDEscButtonClickEvent(SortAscOrDEscButtonClickEvent event, Emitter<HomeState> emit) {
     selectedLabel[currentTab] = event.sortingLabel;
     sortingByLabel();
+    emit(SortIconSelectionStatus(selectedLabel: event.sortingLabel));
     emit(HomeLoadingSuccess(contactList: contactTabList[currentTab]));
   }
 

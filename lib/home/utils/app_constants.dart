@@ -6,4 +6,5 @@ class AppConstant{
   static const String CONTACT_TAB_LABEL = 'Contact';
   static const String  SORT_BY_NAME_LABEL= 'Sort by name';
   static const String  SORT_BY_CONTACT_LABEL= 'Sort by contact';
+  static const String  TITLE_CONTACT_LOG = 'Contact Log';
 }

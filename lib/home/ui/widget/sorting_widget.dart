@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:march09/home/utils/app_constants.dart';
 import 'package:march09/home/utils/sorting_enum.dart';
 
@@ -35,15 +36,14 @@ class _SortingWidgetState extends State<SortingWidget> {
 
   /// for setting selected sorting label
   void getSortingLabel(Sorting label,Sorting clicked){
-    final Sorting selectLabel;
     switch(label) {
       case Sorting.BYNAME:
         {
           selectedLabelColor = Theme.of(context).colorScheme.primary;
           if (clicked == Sorting.ASC) {
-            selectLabel = Sorting.ASCBYNAME;
+            selectedLabel = Sorting.ASCBYNAME;
           } else {
-            selectLabel = Sorting.DESCBYNAME;
+            selectedLabel = Sorting.DESCBYNAME;
           }
         }
         break;
@@ -51,18 +51,16 @@ class _SortingWidgetState extends State<SortingWidget> {
         {
           selectedLabelColor = Theme.of(context).colorScheme.primary;
           if (clicked == Sorting.ASC) {
-            selectLabel = Sorting.ASCBYCONTACT;
+            selectedLabel = Sorting.ASCBYCONTACT;
           } else {
-            selectLabel = Sorting.DESCBYCONTACT;
+            selectedLabel = Sorting.DESCBYCONTACT;
           }
         }
         break;
       default:
-        selectLabel = Sorting.NONE;
+        selectedLabel = Sorting.NONE;
     }
-    setState(() {
-      selectedLabel = selectLabel;
-    });
+
   }
 
   /// for creating sorting row based on label
@@ -90,12 +88,22 @@ class _SortingWidgetState extends State<SortingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        getSortRow(AppConstant.SORT_BY_NAME_LABEL,Sorting.BYNAME),
-        const SizedBox(height: 10),
-        getSortRow(AppConstant.SORT_BY_CONTACT_LABEL,Sorting.BYCONTACT)
-      ],
+    return BlocBuilder<HomeBloc, HomeState>(
+      bloc: widget.homeBloc,
+      buildWhen: (prev,curr) => curr is !HomeActionState,
+      builder: (context, state) {
+        if(state is SortIconSelectionStatus) {
+          selectedLabel = state.selectedLabel;
+        }
+          return Column(
+            children: [
+              getSortRow(AppConstant.SORT_BY_NAME_LABEL, Sorting.BYNAME),
+              const SizedBox(height: 10),
+              getSortRow(AppConstant.SORT_BY_CONTACT_LABEL, Sorting.BYCONTACT)
+            ],
+          );
+
+      },
     );
   }
 }
