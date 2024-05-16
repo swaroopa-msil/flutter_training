@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:march09/home/utils/app_constants.dart';
 import 'package:march09/home/utils/sorting_enum.dart';
 
 import '../../bloc/home_bloc.dart';
@@ -14,63 +15,70 @@ class SortingWidget extends StatefulWidget {
 class _SortingWidgetState extends State<SortingWidget> {
 
   late Sorting selectedLabel;
+  Color selectedLabelColor = Colors.black;
   @override
   void initState() {
     selectedLabel = widget.homeBloc.selectedLabel[widget.homeBloc.currentTab];
     super.initState();
   }
 
-  Color getColor(String key){
+  Color getColor(String key,bool isLabel){
+    if(isLabel && selectedLabel.name.endsWith(key)){
+      return Theme.of(context).colorScheme.primary;
+    }
     if(selectedLabel.name == key){
-      return Colors.blue;
+      return Theme.of(context).colorScheme.primary;
     }
     return Colors.black;
   }
 
   void getSortingLabel(Sorting label,Sorting clicked){
+    final Sorting selectLabel;
     switch(label) {
       case Sorting.BYNAME:
         {
+          selectedLabelColor = Theme.of(context).colorScheme.primary;
           if (clicked == Sorting.ASC) {
-            selectedLabel = Sorting.ASCBYNAME;
+            selectLabel = Sorting.ASCBYNAME;
           } else {
-            selectedLabel = Sorting.DESCBYNAME;
+            selectLabel = Sorting.DESCBYNAME;
           }
         }
         break;
       case Sorting.BYCONTACT:
         {
+          selectedLabelColor = Theme.of(context).colorScheme.primary;
           if (clicked == Sorting.ASC) {
-            selectedLabel = Sorting.ASCBYCONTACT;
+            selectLabel = Sorting.ASCBYCONTACT;
           } else {
-            selectedLabel = Sorting.DESCBYCONTACT;
+            selectLabel = Sorting.DESCBYCONTACT;
           }
         }
         break;
       default:
-        selectedLabel = Sorting.NONE;
+        selectLabel = Sorting.NONE;
     }
+    setState(() {
+      selectedLabel = selectLabel;
+    });
   }
 
   Widget getSortRow(String title, Sorting bySort){
     return  Row(
       children: [
-        Text(title,style: const TextStyle(
+        Text(title,style: TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.bold
+          fontWeight: FontWeight.bold,
+          color: getColor(bySort.name,true)
         ),),
         const Spacer(),
-        IconButton( icon: Icon(Icons.arrow_upward,color: getColor('${Sorting.ASC.name}${bySort.name}')), onPressed: () {
-          setState(() {
-              getSortingLabel(bySort,Sorting.ASC);
-          });
+        IconButton( icon: Icon(Icons.arrow_upward,color: getColor('${Sorting.ASC.name}${bySort.name}',false)), onPressed: () {
+         getSortingLabel(bySort,Sorting.ASC);
          widget.homeBloc.add(SortAscOrDEscButtonClickEvent(sortingLabel: selectedLabel));
         },),
         const SizedBox(width: 5),
-        IconButton(icon: Icon(Icons.arrow_downward,color: getColor('${Sorting.DESC.name}${bySort.name}')), onPressed: () {
-          setState(() {
-             getSortingLabel(bySort,Sorting.DESC);
-          });
+        IconButton(icon: Icon(Icons.arrow_downward,color: getColor('${Sorting.DESC.name}${bySort.name}',false)), onPressed: () {
+          getSortingLabel(bySort,Sorting.DESC);
           widget.homeBloc.add(SortAscOrDEscButtonClickEvent(sortingLabel: selectedLabel));
         },),
       ],
@@ -81,9 +89,9 @@ class _SortingWidgetState extends State<SortingWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        getSortRow('Sort by name',Sorting.BYNAME),
+        getSortRow(AppConstant.SORT_BY_NAME_LABEL,Sorting.BYNAME),
         const SizedBox(height: 10),
-        getSortRow('Sort by contact',Sorting.BYCONTACT)
+        getSortRow(AppConstant.SORT_BY_CONTACT_LABEL,Sorting.BYCONTACT)
       ],
     );
   }

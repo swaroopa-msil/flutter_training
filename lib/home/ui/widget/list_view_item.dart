@@ -22,17 +22,14 @@ class WatchlistItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(item.name,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.primary)),
-              Text(item.contact,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.primary))
+              Text(item.name,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.primary)),
+              Text(item.contact,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.onSecondaryContainer))
               ]
               ),
               const Spacer(),
               Container(
-                color: Colors.black,height: 30,width: 30,
-                child: Image(
-                  image: NetworkImage(item.url),
-                  fit: BoxFit.fill,
-                ),
+                color: Theme.of(context).colorScheme.primary,height: 30,width: 30,
+                child:  Icon(Icons.person_outline , color: Theme.of(context).colorScheme.background),
               )
             ],
           ),

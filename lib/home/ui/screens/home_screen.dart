@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:march09/home/bloc/home_bloc.dart';
 import 'package:march09/home/ui/screens/watchlist_screen.dart';
+import 'package:march09/home/utils/app_constants.dart';
 
 import '../widget/sorting_widget.dart';
 
@@ -16,31 +17,52 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
 
   final HomeBloc _homeBloc = HomeBloc();
-
   late TabController _tabControl;
-  int tabCount = 5;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _tabControl = TabController(length: 5, vsync: this);
+    _tabControl = TabController(length: HomeBloc.totalTabs, vsync: this);
     _homeBloc.add(InitialDataLoadingEvent());
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
   }
 
   List<Widget> tabViewCall(HomeState state){
     final List<Widget> list = [];
     switch(state.runtimeType){
-      case HomeLoading :
+      case const (HomeLoading) :
         list.add(const Center(
           child: CircularProgressIndicator(),
         ));
-      case HomeLoadingSuccess:
+        break;
+      case const (HomeLoadingSuccess):
+      {
         final successState = state as HomeLoadingSuccess;
-        list.add(WatchlistScreen(contactList: successState.contactList));
-      case HomeLoadingError:
-        list.add(const Center(
-          child: Text('error'),
+        if(successState.contactList.isEmpty){
+          list.add(
+            const Center(
+              child: Text(AppConstant.NO_DATA_AVAILABLE_MESSAGE),
+            )
+          );
+        }else{
+          list.add(WatchlistScreen(contactList: successState.contactList, scrollController: _scrollController));
+          _scrollToTop();
+        }
+      }break;
+      case const (HomeLoadingError):
+        final errorState = state as HomeLoadingError;
+        list.add( Center(
+          child: Text(errorState.errorMessage),
         ));
+        break;
       default: list.add(const SizedBox());
     }
     return list;
@@ -76,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen>
               controller: _tabControl,
               labelPadding: const EdgeInsets.symmetric(horizontal: 5.0),
               tabs: [
-                for(int i = 0; i < tabCount; i++)
-                  Tab(text: 'Contact ${i + 1}')
+                for(int i = 0; i < HomeBloc.totalTabs; i++)
+                  Tab(text: '${AppConstant.CONTACT_TAB_LABEL} ${i + 1}')
               ],
               onTap: (index){
                 _homeBloc.add(ContactTabClickedEvent(tabIndex: index));

@@ -7,4 +7,12 @@ class ContactModel{
   ContactModel({
     required this.url, required this.id, required this.name, required this.contact
 });
+  factory ContactModel.fromJson(Map<String, dynamic> json) {
+    return ContactModel(
+      id: json['id'],
+      name: json['name'],
+      contact: json['Contacts'],
+      url: json['url'],
+    );
+  }
 }

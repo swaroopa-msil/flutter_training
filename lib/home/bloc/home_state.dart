@@ -12,7 +12,12 @@ class HomeLoadingSuccess extends HomeState{
     required this.contactList
 });
 }
-class HomeLoadingError extends HomeState{}
+class HomeLoadingError extends HomeState{
+  final String errorMessage;
+  HomeLoadingError({
+    required this.errorMessage
+});
+}
 
 class SortDialogLoadingSuccess extends HomeActionState{
   final Sorting selectedLabel;

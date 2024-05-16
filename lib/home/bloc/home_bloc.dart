@@ -1,20 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:march09/home/data/contact_log.dart';
+import 'package:march09/home/utils/app_constants.dart';
 
 import '../model/contact_model.dart';
 import '../utils/sorting_enum.dart';
+import 'package:http/http.dart' as http;
+
+import '../utils/sorting_utils.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
+class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
 
   final List<List<ContactModel>> contactTabList = [];
   static int totalTabs = 5;
   List<Sorting> selectedLabel = List.filled(totalTabs, Sorting.NONE);
   int currentTab = 0;
+  final List<ContactModel> contactLogList = [];
 
   HomeBloc() : super(HomeInitial()) {
     on<InitialDataLoadingEvent>(initialDataLoadingEvent);
@@ -23,66 +28,66 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ContactTabClickedEvent>(contactTabClickedEvent);
   }
 
+  Future<List<ContactModel>?> getContactDataFromServer() async{
+    final url = Uri.parse(AppConstant.CONTACT_LIST_URL);
+    try{
+      final resp = await http.get(url);
+      if (resp.statusCode == AppConstant.SUCCESS_CODE) {
+        List<dynamic> data = json.decode(resp.body);
+        final List<ContactModel> contactList = data.map((m) => ContactModel.fromJson(m)).toList();
+        return contactList;
+      } else {
+        return null;
+      }
+    }catch(e){
+      return null;
+    }
+
+  }
+
   void splitContactList(int index){
-    final totalLength = ContactLog.contactLogList.length;
+    final totalLength = contactLogList.length;
     final eachTabItemCount = totalLength ~/totalTabs;
     final start = eachTabItemCount*index;
     int end = start + eachTabItemCount;
     if(index == totalTabs-1){
-      end = ContactLog.contactLogList.length;
+      end = contactLogList.length;
     }
-    contactTabList.add(ContactLog.contactLogList.sublist(start,end));
+    contactTabList.add(contactLogList.sublist(start,end));
   }
 
-  FutureOr<void> initialDataLoadingEvent(InitialDataLoadingEvent event, Emitter<HomeState> emit) {
+  FutureOr<void> initialDataLoadingEvent(InitialDataLoadingEvent event, Emitter<HomeState> emit) async {
      emit(HomeLoading());
      Future.delayed(const Duration(seconds: 1));
-     final List<ContactModel> contactList = ContactLog.contactLog.map((m) => ContactModel(url: m['url']??'',
-         id: m['id']??'',
-         name: m['name']??'',
-         contact: m['Contacts']??''
-     )).toList();
-     ContactLog.contactLogList.addAll(contactList);
-     for(int i =0;i<totalTabs;i++){
-       splitContactList(i);
+     final List<ContactModel>? list = await getContactDataFromServer();
+     if(list != null){
+       contactLogList.addAll(list);
+       for(int i =0;i<totalTabs;i++){
+         splitContactList(i);
+       }
+       emit(HomeLoadingSuccess(contactList: contactTabList[0]));
+     }else{
+       emit(HomeLoadingError(errorMessage: AppConstant.API_FAILED_ERROR_MESSAGE));
      }
-     emit(HomeLoadingSuccess(contactList: contactTabList[0]));
+
   }
 
   void sortingByLabel(){
     switch(selectedLabel[currentTab]){
       case Sorting.ASCBYNAME:
-        contactTabList[currentTab].sort((item1,item2) => sortByName(item1.name,item2.name));
+        contactTabList[currentTab].sort((item1,item2) => sortStringWithNumeric(item1.name,item2.name));
         break;
       case Sorting.DESCBYNAME:
-        contactTabList[currentTab].sort((item1,item2) => sortByName(item2.name,item1.name));
+        contactTabList[currentTab].sort((item1,item2) => sortStringWithNumeric(item2.name,item1.name));
         break;
       case Sorting.ASCBYCONTACT:
-        contactTabList[currentTab].sort((item1,item2) => sortByName(item1.contact,item2.contact));
+        contactTabList[currentTab].sort((item1,item2) => sortStringWithNumeric(normalizePhoneNumber(item1.contact),normalizePhoneNumber(item2.contact)));
         break;
       case Sorting.DESCBYCONTACT:
-        contactTabList[currentTab].sort((item1,item2) => sortByName(item2.contact,item1.contact));
+        contactTabList[currentTab].sort((item1,item2) => sortStringWithNumeric(normalizePhoneNumber(item2.contact),normalizePhoneNumber(item1.contact)));
       default :
 
     }
-  }
-
-  int sortByName(String name1,String name2){
-      // Function to extract the numeric part from a string
-      int extractNumber(String name) {
-        // Regular expression to find the numeric part
-        final regex = RegExp(r'\d+');
-        final match = regex.firstMatch(name);
-        if (match != null) {
-          return int.parse(match.group(0)!);
-        } else {
-          return 0; // Default to 0 if no number is found
-        }
-      }
-      int numA = extractNumber(name1);
-      int numB = extractNumber(name2);
-
-      return numA.compareTo(numB);
   }
 
   FutureOr<void> floatingSortButtonClickedEvent(FloatingSortButtonClickedEvent event, Emitter<HomeState> emit) {
