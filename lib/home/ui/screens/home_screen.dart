@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  /// Watchlist tab screen display
   List<Widget> tabViewCall(HomeState state){
     final List<Widget> list = [];
     switch(state.runtimeType){
@@ -68,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
     return list;
   }
 
+  /// Sorting Bottom sheet
   void _openSortingBottomSheet(BuildContext context) {
     showModalBottomSheet(context: context, builder: (context) {
       return Container(

@@ -22,6 +22,7 @@ class _SortingWidgetState extends State<SortingWidget> {
     super.initState();
   }
 
+  /// for selecting color for sorting label and button icon
   Color getColor(String key,bool isLabel){
     if(isLabel && selectedLabel.name.endsWith(key)){
       return Theme.of(context).colorScheme.primary;
@@ -32,6 +33,7 @@ class _SortingWidgetState extends State<SortingWidget> {
     return Colors.black;
   }
 
+  /// for setting selected sorting label
   void getSortingLabel(Sorting label,Sorting clicked){
     final Sorting selectLabel;
     switch(label) {
@@ -63,6 +65,7 @@ class _SortingWidgetState extends State<SortingWidget> {
     });
   }
 
+  /// for creating sorting row based on label
   Widget getSortRow(String title, Sorting bySort){
     return  Row(
       children: [
