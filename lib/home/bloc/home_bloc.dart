@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:march09/home/repository/home_repository.dart';
 import 'package:march09/home/utils/app_constants.dart';
-
 import '../model/contact_model.dart';
 import '../utils/sorting_enum.dart';
-import 'package:http/http.dart' as http;
-
 import '../utils/sorting_utils.dart';
 
 part 'home_event.dart';
@@ -20,6 +17,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
   List<Sorting> selectedLabel = List.filled(totalTabs, Sorting.NONE);
   int currentTab = 0;
   final List<ContactModel> contactLogList = [];
+  final _homeRepo = HomeRepository();
 
   HomeBloc() : super(HomeInitial()) {
     on<InitialDataLoadingEvent>(initialDataLoadingEvent);
@@ -28,22 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
     on<ContactTabClickedEvent>(contactTabClickedEvent);
   }
 
-  Future<List<ContactModel>?> getContactDataFromServer() async{
-    final url = Uri.parse(AppConstant.CONTACT_LIST_URL);
-    try{
-      final resp = await http.get(url);
-      if (resp.statusCode == AppConstant.SUCCESS_CODE) {
-        List<dynamic> data = json.decode(resp.body);
-        final List<ContactModel> contactList = data.map((m) => ContactModel.fromJson(m)).toList();
-        return contactList;
-      } else {
-        return null;
-      }
-    }catch(e){
-      return null;
-    }
 
-  }
 
   void splitContactList(int index){
     final totalLength = contactLogList.length;
@@ -59,7 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with SortingList {
   FutureOr<void> initialDataLoadingEvent(InitialDataLoadingEvent event, Emitter<HomeState> emit) async {
      emit(HomeLoading());
      Future.delayed(const Duration(seconds: 1));
-     final List<ContactModel>? list = await getContactDataFromServer();
+     final List<ContactModel>? list = await _homeRepo.getContactDataFromServer();
      if(list != null){
        contactLogList.addAll(list);
        for(int i =0;i<totalTabs;i++){
