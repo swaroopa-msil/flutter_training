@@ -11,4 +11,20 @@ mixin ExpressionValidation{
     return digitRegex.hasMatch(expression);
   }
 
+  bool validateParentheses(String expression) {
+    int counter = 0;
+    for (int i = 0; i < expression.length; i++) {
+      if (expression[i] == '(') {
+        counter++;
+      } else if (expression[i] == ')') {
+        counter--;
+        if (counter < 0) {
+          return false;
+        }
+      }
+    }
+    print('counter number $counter');
+    return counter == 0;
+  }
+
 }

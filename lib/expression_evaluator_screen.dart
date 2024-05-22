@@ -12,6 +12,7 @@ class _ExpressionEvaluatorScreenState extends State<ExpressionEvaluatorScreen>  
   final _formKey = GlobalKey<FormState>();
   final _expEvalController = TextEditingController();
   double result = 0;
+  String  expression = '';
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class _ExpressionEvaluatorScreenState extends State<ExpressionEvaluatorScreen>  
                           validator: (value){
                             if (value == null || value.isEmpty) {
                               return 'Please enter valid expression';
-                            }else if(hasInvalidOperator(value) || !containsDigit(value)){
+                            }else if(hasInvalidOperator(value) || !containsDigit(value) || !validateParentheses(value)){
                               return 'Please enter valid expression';
                             }
                             return null;
@@ -52,7 +53,8 @@ class _ExpressionEvaluatorScreenState extends State<ExpressionEvaluatorScreen>  
                         if(_formKey.currentState?.validate() == true){
                           final ob =ExpEvaluator();
                           setState(() {
-                            result = ob.evaluateExpression(_expEvalController.text);
+                            expression = _expEvalController.text;
+                            result = ob.evaluateExpression(expression);
                           });
                           _expEvalController.clear();
                         }
@@ -61,7 +63,7 @@ class _ExpressionEvaluatorScreenState extends State<ExpressionEvaluatorScreen>  
                       const SizedBox(height: 20),
                        Text('Evaluated result is',style: TextStyle(color: Theme.of(context).colorScheme.primary,fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
-                       Text(result.toString(),style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
+                       Text('$expression = $result',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
                     ],
                   )
               ),
