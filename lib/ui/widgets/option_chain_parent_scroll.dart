@@ -130,14 +130,8 @@ class _OptionChainParentScrollState extends State<OptionChainParentScroll> with 
     );
   }
 
-  Widget getHeaderWidget() {
-    if (_strikePrice > _firstItemValue &&
-        _strikePrice < _lastItemValue) {
-      return Positioned(
-          top: _strikePriceIndex,
-          left: (MediaQuery.of(context).size.width / 2) - (100 / 2),
-          child: StickyLabel(strikePrice: _strikePrice));
-    } else if (_firstItemValue >= _strikePrice) {
+  Widget getStickyHeaderWidget() {
+    if (_firstItemValue >= _strikePrice) {
       return Positioned(
           top: 0,
           left: (MediaQuery.of(context).size.width / 2) - (100 / 2),
@@ -175,18 +169,23 @@ class _OptionChainParentScrollState extends State<OptionChainParentScroll> with 
           }
           return Stack(
             children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Stack(children: [
+              SingleChildScrollView(
+                controller: _scrollController,
+                child: Stack(
+                  children: [
                     getSingleRow(),
-                    if(_strikePriceSearched)
-                    getHeaderWidget()
-                    ],),
+                    if (_strikePrice > _firstItemValue &&
+                        _strikePrice < _lastItemValue &&
+                        _strikePriceSearched)
+                      Positioned(
+                          top: _strikePriceIndex,
+                          left: (MediaQuery.of(context).size.width / 2) -
+                              (100 / 2),
+                          child: StickyLabel(strikePrice: _strikePrice))
+                  ],
                 ),
               ),
-              if(_strikePriceSearched)
-              getHeaderWidget()
+              if (_strikePriceSearched) getStickyHeaderWidget()
             ],
           );
         } else {
